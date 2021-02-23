@@ -63,6 +63,12 @@ const buildingItem = (category, inName, amount) => {
 
   moneyArray.push(parseFloat(amount));
 };
+
+const checkClick = (e) => {
+  if (e.target.closest("button").classList.contains("deleting")) {
+    deleteTransaktcion(e);
+  }
+};
 const checkCategory = (transaction) => {
   switch (transaction) {
     case "income":
@@ -79,3 +85,17 @@ const checkCategory = (transaction) => {
       break;
   }
 };
+
+const deleteTransaktcion = (e) => {
+  const deleted = e.target.closest("div").id;
+  const toDelete = document.getElementById(deleted);
+  console.log(`toDelete: ${deleted}`);
+  const transactionAmount = parseFloat(toDelete.childNodes[1].innerText);
+  if (transactionAmount > 0) {
+    incomeArea.removeChild(toDelete);
+  } else {
+    expenseArea.removeChild(toDelete);
+  }
+};
+incomeArea.addEventListener("click", checkClick);
+expenseArea.addEventListener("click", checkClick);
