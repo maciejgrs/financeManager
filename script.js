@@ -22,6 +22,7 @@ const funkcja = () => {
   } else {
     expenseArea.appendChild(newTrans);
   }
+  countMoney(moneyArray, availableMoney);
 };
 
 addButton.addEventListener("click", () => {
@@ -91,11 +92,22 @@ const deleteTransaktcion = (e) => {
   const toDelete = document.getElementById(deleted);
   console.log(`toDelete: ${deleted}`);
   const transactionAmount = parseFloat(toDelete.childNodes[1].innerText);
+  const indexOfTransaction = moneyArray.indexOf(transactionAmount);
+
+  moneyArray.splice(indexOfTransaction, 1);
   if (transactionAmount > 0) {
     incomeArea.removeChild(toDelete);
   } else {
     expenseArea.removeChild(toDelete);
   }
+  countMoney(moneyArray, availableMoney);
 };
+const countMoney = (money, available) => {
+  let sum = money.reduce(function (a, b) {
+    return a + b;
+  }, 0);
+  available.innerText = sum;
+};
+
 incomeArea.addEventListener("click", checkClick);
 expenseArea.addEventListener("click", checkClick);
