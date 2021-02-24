@@ -9,19 +9,36 @@ const incomeArea = document.querySelector(".income-area");
 const availableMoney = document.querySelector(".available-money");
 const expenseArea = document.querySelector(".expenses-area");
 const deleteAll = document.querySelector(".delete-all");
-let id = 0;
+let expenseArray = [];
 const moneyArray = [];
+let incomeArray = [];
+let newTrans;
+let categoryIcon;
+let newTransName;
+let newAmount;
+let toDelete;
+const wydatki = ` <h3>Wydatki:</h3>`;
+const przychod = ` <h3>Przychód:</h3>`;
+
+let id = 0;
+
 const funkcja = () => {
+  checkLocal();
+
   checkCategory(categorySelect.value);
 
   addPanel.style.display = "none";
 
-  buildingItem(categoryIcon, inputName.value, inputAmount.value);
-  if (inputAmount.value > 0) {
-    incomeArea.appendChild(newTrans);
-  } else {
-    expenseArea.appendChild(newTrans);
-  }
+  buildingItem(
+    categoryIcon,
+    inputName.value,
+    inputAmount.value,
+    true,
+    true,
+    true
+  );
+
+  saveLocal(newTrans, inputAmount, id);
   countMoney(moneyArray, availableMoney);
 };
 
@@ -44,25 +61,33 @@ cancelBtn.addEventListener("click", () => {
   addPanel.style.display = "none";
 });
 
-const buildingItem = (category, inName, amount) => {
-  newTrans = document.createElement("div");
-  newTransName = document.createElement("p");
-  newAmount = document.createElement("p");
-  newTransName.innerHTML = `${category} ${inName}`;
-  newTrans.setAttribute("id", id);
-  id++;
-  newAmount.innerText = amount;
-  newTrans.classList.add("transaction");
+const deleteTransaktcion = (e) => {
+  const deleted = e.target.closest("div").id;
+  const toDelete = document.getElementById(deleted);
+  console.log(`toDelete: ${deleted}`);
 
-  newTrans.appendChild(newTransName);
-  newTrans.appendChild(newAmount);
+  const transactionAmount = parseFloat(toDelete.childNodes[1].innerText);
 
-  const deleteBtn = document.createElement("button");
-  deleteBtn.classList.add("deleting");
-  deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
-  newTrans.appendChild(deleteBtn);
+  const indexOfTransaction = moneyArray.indexOf(transactionAmount);
 
-  moneyArray.push(parseFloat(amount));
+  moneyArray.splice(indexOfTransaction, 1);
+  idNumber = deleted;
+  console.log(`idnumber w script to ${idNumber}`);
+
+  deleteLocalItems(toDelete, transactionAmount, idNumber);
+  if (transactionAmount > 0) {
+    incomeArea.removeChild(toDelete);
+  } else {
+    expenseArea.removeChild(toDelete);
+  }
+  countMoney(moneyArray, availableMoney);
+};
+
+const countMoney = (money, available) => {
+  let sum = money.reduce(function (a, b) {
+    return a + b;
+  }, 0);
+  available.innerText = sum;
 };
 
 const checkClick = (e) => {
@@ -87,27 +112,47 @@ const checkCategory = (transaction) => {
   }
 };
 
-const deleteTransaktcion = (e) => {
-  const deleted = e.target.closest("div").id;
-  const toDelete = document.getElementById(deleted);
-  console.log(`toDelete: ${deleted}`);
-  const transactionAmount = parseFloat(toDelete.childNodes[1].innerText);
-  const indexOfTransaction = moneyArray.indexOf(transactionAmount);
+const buildingItem = (category, inName, amount, bool, money, idE, idN) => {
+  newTrans = document.createElement("div");
+  newTransName = document.createElement("p");
+  newAmount = document.createElement("p");
+  newTransName.innerHTML = `${category} ${inName}`;
 
-  moneyArray.splice(indexOfTransaction, 1);
-  if (transactionAmount > 0) {
-    incomeArea.removeChild(toDelete);
-  } else {
-    expenseArea.removeChild(toDelete);
+  newAmount.innerText = amount;
+  newTrans.classList.add("transaction");
+   
+
+  newTrans.appendChild(newTransName);
+  newTrans.appendChild(newAmount);
+
+  if (bool) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("deleting");
+    deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+    newTrans.appendChild(deleteBtn);
   }
-  countMoney(moneyArray, availableMoney);
+  if (money) {
+    moneyArray.push(parseFloat(amount));
+  }
+  if (idE) {
+    newTrans.setAttribute("id", id);
+    id++;
+  } else {
+    newTrans.setAttribute("id", idN);
+  }
 };
-const countMoney = (money, available) => {
-  let sum = money.reduce(function (a, b) {
-    return a + b;
-  }, 0);
-  available.innerText = sum;
-};
+
 
 incomeArea.addEventListener("click", checkClick);
 expenseArea.addEventListener("click", checkClick);
+
+const addDesc = document.querySelector(".add-description");
+const addDescBtn = document.querySelector(".opis")
+const cancelButton = document.querySelector(".canceling")
+addDescBtn.addEventListener("click", () => {
+  addDesc.style.display = "flex";
+});
+cancelButton.addEventListener("click", () => {
+  addDesc.style.display = "none";
+});
+document.addEventListener("DOMContentLoaded", getLocalItems);
