@@ -141,7 +141,13 @@ const buildingItem = (category, inName, amount, bool, money, idE, idN) => {
     newTrans.setAttribute("id", idN);
   }
 };
-
+deleteAll.addEventListener("click", () => {
+  localStorage.clear();
+  incomeArea.innerHTML = przychod;
+  expenseArea.innerHTML = wydatki;
+  detailArea.innerHTML = ''
+  sumMoney.innerText = '0'
+});
 
 incomeArea.addEventListener("click", checkClick);
 expenseArea.addEventListener("click", checkClick);

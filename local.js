@@ -54,7 +54,7 @@ const saveLocal = (newTrans, inputAmount, id) => {
   }
   localStorage.setItem("localIncArr", JSON.stringify(localIncArr));
   localStorage.setItem("localExpArr", JSON.stringify(localExpArr));
- 
+  checkDetails(detail);
 };
 
 const getLocalItems = () => {
@@ -62,7 +62,7 @@ const getLocalItems = () => {
 
   creatingNewList(incomeArea, localIncArr);
   creatingNewList(expenseArea, localExpArr);
- 
+  checkDetails(detail);
 };
 const deleteLocalItems = (toDelete, transactionAmount, idNumber) => {
   checkLocal();
@@ -83,7 +83,7 @@ const deleteLocalItems = (toDelete, transactionAmount, idNumber) => {
   }
   localStorage.setItem("localIncArr", JSON.stringify(localIncArr));
   localStorage.setItem("localExpArr", JSON.stringify(localExpArr));
- 
+  checkDetails(detail);
 };
 
 const creatingNewList = (area, array) => {
